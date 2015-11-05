@@ -1,0 +1,13 @@
+<ion-view title="Add Card">
+  <ion-content padding="true" class="has-header">
+    <div>
+      <p style="text-align:center;">
+        Select category
+      </p>
+    </div>
+    <div class="list">
+      <ion-radio ng-repeat="category in cardCategories" ng-model="newCard.category" ng-value="category.value" name="category">{{category.text}}</ion-radio>
+    </div>
+    <button class="button button-stable button-block" ng-click="next()">Next</button>
+  </ion-content>
+</ion-view>
