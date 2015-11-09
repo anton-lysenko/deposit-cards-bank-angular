@@ -41,18 +41,14 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
     },
   ];
   vm.next = function () {
+    NewCard.category = vm.cardCategories;
     $state.go('addCardBarcode');
   }
 })
 .controller('addCardBarcodeCtrl', function ($scope, $state, $ionicPlatform, $cordovaBarcodeScanner, NewCard) {
   var vm = $scope;
   $ionicPlatform.ready(function () {
-//    $scope.barcode = {
-//      value: '0000000000000',
-//      format: ''
-//    };
     vm.newCard = NewCard;
-    vm.barcodeValue = '0000000000000';
     vm.scanBarcode = function () {
       $cordovaBarcodeScanner
         .scan()
@@ -66,6 +62,7 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
     }
 
     vm.next = function () {
+      NewCard = vm.newCard;
       $state.go('addCardPhoto');
     }
 
@@ -73,9 +70,8 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
 
 })
 
-.controller('addCardPhotoCtrl', function ($scope, Camera, $ionicPlatform) {
+.controller('addCardPhotoCtrl', function ($scope, Camera, $ionicPlatform, NewCard) {
   $ionicPlatform.ready(function () {
-
     $scope.getPhoto = function () {
       Camera.getPicture().then(function (imageURI) {
         console.log(imageURI);

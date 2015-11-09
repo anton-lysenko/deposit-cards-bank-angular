@@ -24,7 +24,7 @@ angular.module('app.services', [])
 .service('NewCard', [function(){
   var discountCard = {
     barcode: {
-      format: '',
+      format: 'ean13',
       value: '0000000000000'
     },
     cardPhoto: '',
