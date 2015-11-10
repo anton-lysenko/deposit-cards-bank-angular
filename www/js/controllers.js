@@ -1,6 +1,6 @@
 angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
 
-.controller('discountCardsCtrl', function ($scope, $state) {
+.controller('discountCardsCtrl', function ($scope, $state, $localstorage, NewCard) {
   $scope.addCard = function () {
     $state.go('selectCardCategory');
   }
@@ -8,84 +8,98 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
 })
 
 .controller('comfyDiscountCtrl', function ($scope) {
-  var vm = $scope;
+    var vm = $scope;
 
-})
-.controller('selectCardCategoryCtrl', function ($scope, $state, NewCard) {
-  var vm = $scope;
-  vm.newCard = NewCard;
-  vm.cardCategories = [
-    {
-      text: 'Common',
-      value: 'common'
+  })
+  .controller('selectCardCategoryCtrl', function ($scope, $state, NewCard) {
+    var vm = $scope;
+    vm.newCard = NewCard;
+    vm.cardCategories = [
+      {
+        text: 'Common',
+        value: 'common'
     },
-    {
-      text: 'Food',
-      value: 'food'
+      {
+        text: 'Food',
+        value: 'food'
     },
-    {
-      text: 'Cosmetics',
-      value: 'cosmetics'
+      {
+        text: 'Cosmetics',
+        value: 'cosmetics'
     },
-    {
-      text: 'Sports goods',
-      value: 'sports_goods'
+      {
+        text: 'Sports goods',
+        value: 'sports_goods'
     },
-    {
-      text: 'Clothes',
-      value: 'clothes'
+      {
+        text: 'Clothes',
+        value: 'clothes'
     },
-    {
-      text: 'Electronics',
-      value: 'electronics'
+      {
+        text: 'Electronics',
+        value: 'electronics'
     },
   ];
-  vm.next = function () {
-    NewCard.category = vm.cardCategories;
-    $state.go('addCardBarcode');
-  }
-})
-.controller('addCardBarcodeCtrl', function ($scope, $state, $ionicPlatform, $cordovaBarcodeScanner, NewCard) {
-  var vm = $scope;
-  $ionicPlatform.ready(function () {
-    vm.newCard = NewCard;
-    vm.scanBarcode = function () {
-      $cordovaBarcodeScanner
-        .scan()
-        .then(function (barcodeData) {
-          vm.newCard.barcode.value = barcodeData.text;
-          vm.newCard.barcode.format = barcodeData.format;
-        }, function (error) {
-          alert(error);
-        });
-
-    }
-
     vm.next = function () {
-      NewCard = vm.newCard;
-      $state.go('addCardPhoto');
+      NewCard.category = vm.newCard.category;
+      $state.go('addCardBarcode');
     }
+  })
+  .controller('addCardBarcodeCtrl', function ($scope, $state, $ionicPlatform, $cordovaBarcodeScanner, NewCard, $localstorage) {
+    var vm = $scope;
+    $ionicPlatform.ready(function () {
+      vm.newCard = NewCard;
+      vm.scanBarcode = function () {
+        $cordovaBarcodeScanner
+          .scan()
+          .then(function (barcodeData) {
+            vm.newCard.barcode.value = barcodeData.text;
+            vm.newCard.barcode.format = barcodeData.format;
+          }, function (error) {
+            alert(error);
+          });
 
-  });
+      }
 
-})
+      vm.next = function () {
+        NewCard = vm.newCard;
+        $state.go('addCardPhoto');
+      }
 
-.controller('addCardPhotoCtrl', function ($scope, Camera, $ionicPlatform, NewCard) {
+    });
+
+  })
+
+.controller('addCardPhotoCtrl', function ($scope, $state, $ionicPlatform, NewCard, $cordovaCamera, $localstorage) {
   $ionicPlatform.ready(function () {
-    $scope.getPhoto = function () {
-      Camera.getPicture().then(function (imageURI) {
-        console.log(imageURI);
-        $scope.lastPhoto = imageURI;
-      }, function (err) {
-        console.err(err);
-      }, {
-        quality: 100,
-        targetWidth: 320,
-        targetHeight: 320,
-        saveToPhotoAlbum: false
-      });
+    var options = {
+      quality: 75,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 320,
+      targetHeight: 480,
+      popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: false,
+      correctOrientation: true
     };
 
+    $scope.getPhoto = function () {
+      $cordovaCamera.getPicture(options).then(function (imageData) {
+        var image = document.getElementById('myImage');
+        $scope.lastPhoto = "data:image/jpeg;base64," + imageData;
+        NewCard.cardPhoto = $scope.lastPhoto;
+      }, function (err) {
+        // error
+      });
+    }
+
+    $scope.createCard = function () {
+      $localstorage.setObject('Fishka', NewCard);
+      NewCard = {};
+      $state.go('discountCards');
+    }
   });
 
 })
