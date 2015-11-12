@@ -18,8 +18,6 @@ angular.module('app.directives', [])
         };
         $(element).barcode(scope.barcodeValue, scope.barcodeFormat, settings);
         scope.$watch('barcodeValue', function (value) {
-            
-            //$(element).barcode(value, scope.barcodeFormat, settings);
             switch (scope.barcodeFormat) {
 //                case "std25":
 //                case "int25":

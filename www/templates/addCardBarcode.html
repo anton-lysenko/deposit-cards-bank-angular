@@ -1,16 +1,27 @@
 <ion-view title="Add Card">
   <ion-content padding="true" class="has-header">
+<!--
     <div>
       <p style="text-align:center;">
-        Scan Barcode
+        Enter Barcode
+      </p>
+    </div>
+-->
+
+<!--
+    <label class="item item-input">
+      <input type="text" ng-model="newCard.barcode.value">
+    </label>
+-->
+
+    <div>
+      <p style="text-align:center;margin-top:25px;">
+        Scan
       </p>
     </div>
 
     <div id="barcode-image" barcode-image barcode-value="newCard.barcode.value" barcode-format="newCard.barcode.format"></div>
-<!--
-    <input ng-model="newCard.barcode.value" name="barcode_value" class="" disabled />
-    <input ng-model="newCard.barcode.format" name="barcode_format" class="" disabled />
--->
+
     <button class="button button-stable button-block" ng-click="scanBarcode()">Scan Barcode</button>
     <button class="button button-stable button-block" ng-click="next()">Next</button>
   </ion-content>

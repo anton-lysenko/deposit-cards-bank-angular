@@ -13,12 +13,28 @@ angular.module('app.routes', [])
     .state('discountCards', {
       url: '/Cards_list',
       templateUrl: 'templates/discountCards.html',
-      controller: 'discountCardsCtrl'
+      controller: 'discountCardsCtrl',
+      params: {
+        updated: false
+      }
+    })
+    .state('discountCard', {
+      url: '/discount_card',
+      templateUrl: 'templates/discountCard.html',
+      controller: 'discountCardCtrl',
+      params: {
+        name: ''
+      }
     })
     .state('comfyDiscount', {
       url: '/comfy_discount',
       templateUrl: 'templates/comfyDiscount.html',
       controller: 'comfyDiscountCtrl'
+    })
+    .state('enterNewCardName', {
+      url: '/new_card_name',
+      templateUrl: 'templates/newCardName.html',
+      controller: 'newCardNameCtrl'
     })
     .state('selectCardCategory', {
       url: '/add_card_category',

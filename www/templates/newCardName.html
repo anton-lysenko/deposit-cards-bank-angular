@@ -1,0 +1,18 @@
+<ion-view title="Add Card">
+  <ion-content padding="true" class="has-header">
+    <div>
+      <p style="text-align:center;">
+        Enter Card Name
+      </p>
+    </div>
+
+    <label class="item item-input">
+      <input type="text" ng-model="newCard.name">
+    </label>
+    <label class="item item-input">
+      <input type="text" ng-model="newCard.description">
+    </label>
+
+    <button class="button button-stable button-block" ng-click="next()">Next</button>
+  </ion-content>
+</ion-view>

@@ -1,15 +1,18 @@
 <ion-view title="Discount Cards">
   <ion-nav-buttons side="right">
-    <button class="button button-icon icon-left ion-android-add" ng-click="addCard()">Add Card</button>
+    <button class="button button-icon icon-left ion-android-edit">Edit Card</button>
   </ion-nav-buttons>
   <ion-content padding="true" class="has-header">
+<!--
     <form class="list"></form>
     <ion-list>
-      <ion-item ng-repeat="card in cardsList" class="item-thumbnail-left" href="#" ng-click="openCard(card.name)">
+      <ion-item ng-repeat="card in cardsList" class="item-thumbnail-left" href="#">
         <img ng-src="card.cardPhoto">
         <h2>{{ card.name }}</h2>
         <p>{{ card.description }}</p>
       </ion-item>
     </ion-list>
+-->
+    {{cardName}}
   </ion-content>
 </ion-view>

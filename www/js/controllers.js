@@ -1,19 +1,39 @@
 angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
 
-.controller('discountCardsCtrl', function ($scope, $state, $localstorage, NewCard) {
+.controller('discountCardsCtrl', function ($scope, $state, CardsManager, $stateParams) {
   $scope.addCard = function () {
-    $state.go('selectCardCategory');
+    $state.go('enterNewCardName');
   }
 
+  $scope.cardsList = CardsManager.getCardsList();
+
+  $scope.openCard = function (cardName) {
+    $state.go('discountCard', {
+      name: cardName
+    });
+  }
+  if ($stateParams.updated == true) {
+    $scope.cardsList = CardsManager.getCardsList();
+    $stateParams.updated = false;
+  }
 })
 
-.controller('comfyDiscountCtrl', function ($scope) {
+.controller('discountCardCtrl', function ($scope, $stateParams) {
     var vm = $scope;
-
+    vm.cardName = $stateParams.name;
+    $stateParams.name = '';
+  })
+  .controller('newCardNameCtrl', function ($scope, $state, NewCard) {
+    var vm = $scope;
+    vm.newCard = NewCard.card;
+    vm.next = function () {
+      NewCard.card = vm.newCard;
+      $state.go('selectCardCategory');
+    }
   })
   .controller('selectCardCategoryCtrl', function ($scope, $state, NewCard) {
     var vm = $scope;
-    vm.newCard = NewCard;
+    vm.newCard = NewCard.card;
     vm.cardCategories = [
       {
         text: 'Common',
@@ -41,14 +61,14 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
     },
   ];
     vm.next = function () {
-      NewCard.category = vm.newCard.category;
+      NewCard.card.category = vm.newCard.category;
       $state.go('addCardBarcode');
     }
   })
-  .controller('addCardBarcodeCtrl', function ($scope, $state, $ionicPlatform, $cordovaBarcodeScanner, NewCard, $localstorage) {
+  .controller('addCardBarcodeCtrl', function ($scope, $state, $ionicPlatform, $cordovaBarcodeScanner, NewCard) {
     var vm = $scope;
     $ionicPlatform.ready(function () {
-      vm.newCard = NewCard;
+      vm.newCard = NewCard.card;
       vm.scanBarcode = function () {
         $cordovaBarcodeScanner
           .scan()
@@ -62,15 +82,15 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
       }
 
       vm.next = function () {
-        NewCard = vm.newCard;
+        NewCard.card = vm.newCard;
         $state.go('addCardPhoto');
       }
 
     });
-
+    NewCard.reset();
   })
 
-.controller('addCardPhotoCtrl', function ($scope, $state, $ionicPlatform, NewCard, $cordovaCamera, $localstorage) {
+.controller('addCardPhotoCtrl', function ($scope, $state, $ionicPlatform, NewCard, $cordovaCamera, CardsManager) {
   $ionicPlatform.ready(function () {
     var options = {
       quality: 75,
@@ -89,16 +109,18 @@ angular.module('app.controllers', ['ngCordova', 'app.services', 'ionic'])
       $cordovaCamera.getPicture(options).then(function (imageData) {
         var image = document.getElementById('myImage');
         $scope.lastPhoto = "data:image/jpeg;base64," + imageData;
-        NewCard.cardPhoto = $scope.lastPhoto;
+        NewCard.card.cardPhoto = $scope.lastPhoto;
       }, function (err) {
         // error
       });
     }
 
     $scope.createCard = function () {
-      $localstorage.setObject('Fishka', NewCard);
-      NewCard = {};
-      $state.go('discountCards');
+      CardsManager.addCard(NewCard.card);
+      NewCard.reset();
+      $state.go('discountCards', {
+        updated: true
+      });
     }
   });
 
